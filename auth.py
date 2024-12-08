@@ -1,3 +1,4 @@
+import os
 from jose import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
@@ -5,7 +6,8 @@ from fastapi import HTTPException, Security, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 # Secret key and algorithm for JWT
-SECRET_KEY = "my-secret-key"
+# SECRET_KEY = "my-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-default-secret-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -29,6 +31,7 @@ def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 # Verify a JWT access token
 def verify_access_token(token: str) -> dict:

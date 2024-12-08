@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from auth import get_current_user
-from services.firestore import create_plant, get_user_plants, get_plant_by_id, update_plant
+from firestore import create_plant, get_user_plants, get_plant_by_id, update_plant
 from pydantic import BaseModel, FieldValidationInfo, field_validator
 from typing import Optional, Union
 
@@ -39,7 +39,7 @@ class PlantCreate(BaseModel):
 
 @router.post("/api/plants/")
 async def create_plant_route(plant: PlantCreate, user: dict = Depends(get_current_user)):
-    username = user["sub"]  # Extract the authenticated user's username
+    username = user["username"]  # Extract the authenticated user's username
 
     # Prepare plant data
     plant_data = plant.dict()
@@ -58,7 +58,7 @@ async def create_plant_route(plant: PlantCreate, user: dict = Depends(get_curren
 @router.get("/api/plants")
 async def get_plants(user: dict = Depends(get_current_user)):
     # Fetch plants for the authenticated user
-    username = user["sub"]  # Extract the username from the JWT token
+    username = user["username"]  # Extract the username from the JWT token
     plants = get_user_plants(username)
     
     if not plants:
@@ -68,7 +68,7 @@ async def get_plants(user: dict = Depends(get_current_user)):
 
 @router.get("/api/plants/{plant_id}")
 async def get_plant(plant_id: str, user: dict = Depends(get_current_user)):
-    username = user["sub"]  # Extract the username from the JWT token
+    username = user["username"]  # Extract the username from the JWT token
     
     # Fetch the plant by ID
     plant = get_plant_by_id(plant_id, username)
@@ -108,7 +108,7 @@ async def update_plant_route(
     updates: PlantUpdate,
     user: dict = Depends(get_current_user)
 ):
-    username = user["sub"]  # Extract the authenticated user's username
+    username = user["username"]  # Extract the authenticated user's username
 
     # Prepare the update data
     update_data = updates.dict(exclude_unset=True)

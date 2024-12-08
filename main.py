@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routers import user, plants
+import user
+import plants
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(docs_url="/")

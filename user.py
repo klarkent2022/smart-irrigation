@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from services.firestore import create_user, get_user_by_id, get_user_by_email
+from firestore import create_user, get_user_by_id, get_user_by_email
 from auth import verify_password, create_access_token, hash_password, get_current_user
 from pydantic import BaseModel, EmailStr
 
@@ -47,6 +47,26 @@ async def login(user: UserLogin):
     if not verify_password(user.password, stored_user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    # Create a JWT token
-    token = create_access_token({"sub": stored_user["username"]})
-    return {"token": token}
+    # Create a JWT token with explicit "username" and "email" fields
+    token = create_access_token({
+        "username": stored_user["username"],  # Use "username" instead of "sub"
+        "email": stored_user["email"]        # Add email for additional context
+    })
+
+    return {
+        "token": token,
+        "user": {
+            "username": stored_user["username"],
+            "email": stored_user["email"]
+        }
+    }
+
+@router.get("/api/user")
+async def get_user_by_token(current_user: dict = Depends(get_current_user)):
+    """
+    Retrieve user information using the JWT token.
+    """
+    return {
+        "username": current_user["username"],  # Extracted from "username"
+        "email": current_user["email"],       # Extracted from "email"
+    }
