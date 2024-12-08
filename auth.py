@@ -6,7 +6,6 @@ from fastapi import HTTPException, Security, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 # Secret key and algorithm for JWT
-# SECRET_KEY = "my-secret-key"
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-default-secret-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
