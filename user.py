@@ -55,10 +55,8 @@ async def login(user: UserLogin):
 
     return {
         "token": token,
-        "user": {
-            "username": stored_user["username"],
-            "email": stored_user["email"]
-        }
+        "username": stored_user["username"],
+        "email": stored_user["email"]
     }
 
 @router.get("/api/user")

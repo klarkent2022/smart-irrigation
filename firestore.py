@@ -1,7 +1,7 @@
 from google.cloud import firestore
 
 # Initialize Firestore client
-db = firestore.Client.from_service_account_json("smart-irrigation.json")
+db = firestore.Client.from_service_account_json("plant-watering.json")
 
 # Test function to verify Firestore connection
 def test_firestore_connection():
